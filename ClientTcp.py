@@ -1,18 +1,23 @@
 import socket
+import pickle
 
 serverName = '192.168.56.1'
 serverPort = 8080
+HEADERSIZE = 5
 
 clientSocket = socket.socket()
 
 clientSocket.connect((serverName,serverPort))
+sentence = "1"
+while(sentence!=""):
+    sentence = input("ingrese un string")
 
-sentence = input("ingrese un string")
+    dictionary = {1:sentence}
+    msg = pickle.dumps(dictionary)
+    msg = bytes(f"{len(msg):<{HEADERSIZE}}", 'utf-8')+msg
+    print(msg)
 
-clientSocket.send(bytes(sentence,'utf-8'))
+    clientSocket.send(msg)
 
-modifiedMsg = clientSocket.recv(1024)
-
-print("recibido del servidor",modifiedMsg.decode('utf-8'))
 
 clientSocket.close()
